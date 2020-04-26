@@ -1,0 +1,16 @@
+type Chat {
+    id: Int!
+    user: String!
+    desc: String!
+}
+
+type Query {
+    chatting: [Chat]!
+}
+
+type Mutation {
+    write(
+        user: String!
+        desc: String!
+    ): String!
+}
