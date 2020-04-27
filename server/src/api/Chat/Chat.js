@@ -1,4 +1,7 @@
+import { PubSub } from 'graphql-yoga'
 
+export const pubsub = new PubSub();
+const NEW_CHAT = "NEW_CHAT";
 
 let chattingLog = [{
     id: 0,
@@ -22,5 +25,12 @@ export default {
             };
             chattingLog.push(newChat);
         }
+    },
+    Subscription: {
+        newChat: {
+            subscrib:(_ ,__, { pubsub }) => {
+                return pubsub.asyncIterator(NEW_CHAT)
+            }
+        }
     }
-}
+};
