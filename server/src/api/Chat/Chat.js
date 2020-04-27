@@ -1,20 +1,7 @@
-import { PubSub } from 'graphql-yoga'
-
-export const pubsub = new PubSub();
-const NEW_CHAT = "NEW_CHAT";
-
-let chattingLog = [{
-    id: 0,
-    user: "admin",
-    desc: "Hello"
-}];
+import { chattingLog } from '../../chattingLog';
+import { pubsub, NEW_CHAT } from '../../server';
 
 export default {
-    Query: {
-        chatting: () => {
-            return chattingLog;
-        }
-    },
     Mutation:{
         write: (_, { user, desc }) => {
             const id = chattingLog.length;
@@ -24,13 +11,10 @@ export default {
                 desc
             };
             chattingLog.push(newChat);
-        }
-    },
-    Subscription: {
-        newChat: {
-            subscrib:(_ ,__, { pubsub }) => {
-                return pubsub.asyncIterator(NEW_CHAT)
-            }
+            pubsub.publish(NEW_CHAT, {
+                newChat
+            })
+            return "Yes"
         }
     }
 };

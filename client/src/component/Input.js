@@ -1,44 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
-const write = gql`
+
+const WRITE = gql`
   mutation write($user: String!, $desc: String!) {
     write(user: $user, desc: $desc)
   }
 `;
 
 const Input = () => {
-  const [writer, setWriter] = useState("");
+  const [user, setUser] = useState("");
   useEffect(() => {
-    const writer = prompt('Name');
-    setWriter(writer);
+    const user = prompt('Name');
+    setUser(user);
   }, []);
-  const [description, setDescription] = useState("");
-  const [ mutation ] = useMutation(write, {
+  const [desc, setDesc] = useState("");
+  const [ mutation ] = useMutation(WRITE, {
     variables: {
-      writer,
-      description
+      user,
+      desc
     }
   });
   return (
     <div>
       <input
         type="text"
-        value={description}
+        value={desc}
         placeholder="내용을 입력하세요"
         onChange={e => {
-          setDescription(e.target.value);
+          setDesc(e.target.value);
         }}
         onKeyPress={e => {
           if(e.key === 'Enter') {
-            setDescription("");
+            setDesc("");
             mutation();
           }
         }}
       />
       <button
         onClick={() => {
-          setDescription("");
+          setDesc("");
           mutation();
         }}
       >

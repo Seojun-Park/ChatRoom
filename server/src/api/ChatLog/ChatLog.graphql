@@ -1,0 +1,9 @@
+type Chat {
+    id: Int!
+    user: String!
+    desc: String!
+}
+
+type Query {
+    chatting: [Chat]!
+}

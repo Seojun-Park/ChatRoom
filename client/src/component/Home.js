@@ -8,8 +8,8 @@ const getChatting = gql`
   query {
     chatting {
       id
-      writer
-      description
+      user
+      desc
     }
   }
 `;
@@ -18,17 +18,15 @@ const newChat = gql`
   subscription {
     newChat {
       id
-      writer
-      description
+      user
+      desc
     }
   }
 `;
 
 let unsubscribe = null; //publish 했을때 변화
 
-export default () => {
-
-    return(
+export default () => 
             <Query query={getChatting}>
                 {({ loading, data, subscribeToMore }) => {
                 if (loading) {
@@ -51,13 +49,11 @@ export default () => {
                     <div>
                     {data.chatting.map(x => (
                         <h3 key={x.id}>
-                        {x.writer}: {x.description}
+                        {x.user}: {x.desc}
                         </h3>
                     ))}
                     </div>
                 );
                 }}
             </Query>
-  )
-  }
 ; 
