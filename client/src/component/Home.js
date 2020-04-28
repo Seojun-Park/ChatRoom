@@ -17,24 +17,16 @@ const useStyles = makeStyles((theme) => ({
 
 let unsubscribe = null; //publish 했을때 변화
 
-const Wrapper = styled.div`
-    background-color: #f2f2f2;
-    min-width: 600px;
-    min-height: 100vh;
-    margin: 0 auto;
-    text-align: center;
-`;
-
 export default () => {
     const classes = useStyles();
     const { loading, data, subscribeToMore } = useQuery(GET_CHAT);
     if (loading){
         return (
-            <Wrapper>
+            <>
                 <div className={classes.root}>
                     <CircularProgress color="secondary" />
                 </div>
-            </Wrapper>
+            </>
         )
     }
     console.log(data);
@@ -42,16 +34,25 @@ export default () => {
         unsubscribe = subscribeToMore({
             document: NEW_CHAT,
             updateQuery: (prev, { subscriptionData }) => {
-                console.log(prev)
                 if (!subscriptionData) {
                     return prev;
                 }
+                console.log(subscriptionData);
+                const { newChat } = subscriptionData.data;
+                return {
+                    ...prev,
+                    chatting : [...prev.chatting, newChat]
+                };
             }
-        })
+        });
     }
     return (
-        <Wrapper>
-            {data.chatting[0].user}
-        </Wrapper>
+        <>
+            {data.chatting.map(x => (
+                    <h3 key={x.id}>
+                        {x.user}: {x.desc}
+                    </h3>
+            ))}
+        </>
     )
 }

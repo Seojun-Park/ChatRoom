@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
-
+import { WRITE } from './SharedQueries';
 
 
 const Input = () => {
