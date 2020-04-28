@@ -1,59 +1,57 @@
 import React from 'react';
-import { gql } from 'apollo-boost';
-// import { useQuery } from '@apollo/react-hooks';
+import { GET_CHAT, NEW_CHAT } from './SharedQueries'
+import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
-import { Query } from "react-apollo";
 
-const getChatting = gql`
-  query {
-    chatting {
-      id
-      user
-      desc
-    }
-  }
-`;
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-const newChat = gql`
-  subscription {
-    newChat {
-      id
-      user
-      desc
-    }
-  }
-`;
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    '& > * + *': {
+      marginLeft: theme.spacing(2),
+    },
+  },
+}));
 
 let unsubscribe = null; //publish 했을때 변화
 
-export default () => 
-            <Query query={getChatting}>
-                {({ loading, data, subscribeToMore }) => {
-                if (loading) {
-                    return null;
+const Wrapper = styled.div`
+    background-color: #f2f2f2;
+    min-width: 600px;
+    min-height: 100vh;
+    margin: 0 auto;
+    text-align: center;
+`;
+
+export default () => {
+    const classes = useStyles();
+    const { loading, data, subscribeToMore } = useQuery(GET_CHAT);
+    if (loading){
+        return (
+            <Wrapper>
+                <div className={classes.root}>
+                    <CircularProgress color="secondary" />
+                </div>
+            </Wrapper>
+        )
+    }
+    console.log(data);
+    if (!unsubscribe) {
+        unsubscribe = subscribeToMore({
+            document: NEW_CHAT,
+            updateQuery: (prev, { subscriptionData }) => {
+                console.log(prev)
+                if (!subscriptionData) {
+                    return prev;
                 }
-                if (!unsubscribe) {
-                    unsubscribe = subscribeToMore({
-                    document: newChat,
-                    updateQuery: (prev, { subscriptionData }) => {
-                        if (!subscriptionData.data) return prev;
-                        const { newChat } = subscriptionData.data;
-                        return {
-                        ...prev,
-                        chatting: [...prev.chatting, newChat]
-                        };
-                    }
-                    });
-                }
-                return (
-                    <div>
-                    {data.chatting.map(x => (
-                        <h3 key={x.id}>
-                        {x.user}: {x.desc}
-                        </h3>
-                    ))}
-                    </div>
-                );
-                }}
-            </Query>
-; 
+            }
+        })
+    }
+    return (
+        <Wrapper>
+            {data.chatting[0].user}
+        </Wrapper>
+    )
+}

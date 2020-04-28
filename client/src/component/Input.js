@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 
-const WRITE = gql`
-  mutation write($user: String!, $desc: String!) {
-    write(user: $user, desc: $desc)
-  }
-`;
+
 
 const Input = () => {
   const [user, setUser] = useState("");
